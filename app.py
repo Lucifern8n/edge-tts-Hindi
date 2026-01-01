@@ -44,3 +44,17 @@ async def list_voices():
         return hindi_voices
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+@app.get("/list-voices")
+async def list_available_voices():
+    import edge_tts
+    # This forces the library to fetch the LATEST list from Microsoft
+    voices = await edge_tts.list_voices()
+    
+    # Filter for Hindi voices
+    hindi_voices = [v for v in voices if "hi-IN" in v["Locale"]]
+    
+    return {
+        "count": len(hindi_voices),
+        "voices": hindi_voices
+    }
