@@ -58,3 +58,11 @@ async def list_available_voices():
         "count": len(hindi_voices),
         "voices": hindi_voices
     }
+@app.get("/force-list")
+async def force_list():
+    import edge_tts
+    # Fetch all voices without filtering first
+    all_voices = await edge_tts.list_voices()
+    # Log the count to see if we are getting the full ~300+ voice set
+    hindi = [v["ShortName"] for v in all_voices if "hi-IN" in v["Locale"]]
+    return {"total_voices_found": len(all_voices), "hindi_voices": hindi}
